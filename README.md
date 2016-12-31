@@ -26,4 +26,4 @@ OpenVPN server can use "https://github.com/kylemanna/docker-openvpn"
 
 * Run the ovpn client
 
-        docker run -v $OVPN_DATA:/etc/openvpn --privileged -d ovpn-client ovpn_client_run --config /etc/openvpn/CLIENTNAME.ovpn
+        docker run -v $OVPN_DATA:/etc/openvpn --privileged -d bali2014/openvpn-client ovpn_client_run --config /etc/openvpn/CLIENTNAME.ovpn
