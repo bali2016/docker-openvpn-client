@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#
+# Run the OpenVPN client normally
+#
+
+if [ "$DEBUG" == "1" ]; then
+  set -x
+fi
+
+set -e
+
+cd $OPENVPN
+
+# Build runtime arguments array based on environment
+USER_ARGS=("${@}")
+ARGS=()
+
+# Checks if ARGS already contains the given value
+function hasArg {
+    local element
+    for element in "${@:2}"; do
+        [ "${element}" == "${1}" ] && return 0
+    done
+    return 1
+}
+
+# Adds the given argument if it's not already specified.
+function addArg {
+    local arg="${1}"
+    [ $# -ge 1 ] && local val="${2}"
+    if ! hasArg "${arg}" "${USER_ARGS[@]}"; then
+        ARGS+=("${arg}")
+        [ $# -ge 1 ] && ARGS+=("${val}")
+    fi
+}
+
+addArg "--config" "$OPENVPN/default_client.ovpn"
+
+
+mkdir -p /dev/net
+if [ ! -c /dev/net/tun ]; then
+    mknod /dev/net/tun c 10 200
+fi
+
+
+echo "Running 'openvpn ${ARGS[@]} ${USER_ARGS[@]}'"
+exec openvpn ${ARGS[@]} ${USER_ARGS[@]}
