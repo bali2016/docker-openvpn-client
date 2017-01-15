@@ -52,4 +52,4 @@ if [ ! -n "$OVPN_SUBNET" ]; then
     OVPN_SUBNET="192.168.255.0/24"
 fi
 
-sudo iptables -t nat -A POSTROUTING -s $OVPN_SUBNET -j MASQUERADE
+iptables -t nat -A POSTROUTING -s $OVPN_SUBNET -j MASQUERADE
