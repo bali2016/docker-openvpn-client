@@ -35,6 +35,13 @@ function addArg {
     fi
 }
 
+# set NAT forwarding
+if [ ! -n "$OVPN_SUBNET" ]; then
+    OVPN_SUBNET="192.168.255.0/24"
+fi
+
+iptables -t nat -A POSTROUTING -s $OVPN_SUBNET -j MASQUERADE
+
 addArg "--config" "$OPENVPN/default_client.ovpn"
 
 
@@ -46,10 +53,3 @@ fi
 
 echo "Running 'openvpn ${ARGS[@]} ${USER_ARGS[@]}'"
 exec openvpn ${ARGS[@]} ${USER_ARGS[@]}
-
-# set NAT forwarding
-if [ ! -n "$OVPN_SUBNET" ]; then
-    OVPN_SUBNET="192.168.255.0/24"
-fi
-
-iptables -t nat -A POSTROUTING -s $OVPN_SUBNET -j MASQUERADE
